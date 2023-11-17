@@ -1,0 +1,199 @@
+
+
+import javax.swing.JOptionPane;
+
+public class WordGuessingGame {
+
+    private static final String[] EASY_WORDS = {"java", "code", "bug", "debug"};
+    private static final String[] MEDIUM_WORDS = {"program", "developer", "computer", "algorithm"};
+    private static final String[] HARD_WORDS = {"interface", "abstraction", "encapsulation", "polymorphism"};
+    private static final String[] EXPERT_WORDS = {"philosophical", "extraterrestrial", "hippopotamus", "antidisestablishmentarianism"};
+
+    private static final int MAX_ATTEMPTS = 6;
+
+    public static void main(String[] args) {
+        int difficultyLevel = getDifficultyLevel();
+
+        String wordToGuess = chooseWord(difficultyLevel);
+        char[] guessedLetters = new char[wordToGuess.length()];
+        int attemptsLeft = MAX_ATTEMPTS;
+
+        initializeGuessedLetters(guessedLetters);
+
+        JOptionPane.showMessageDialog(null, "Welcome to Hangman!");
+
+        while (attemptsLeft > 0) {
+            char guess = getValidGuess();
+
+            if (isAlreadyGuessed(guess, guessedLetters)) {
+                JOptionPane.showMessageDialog(null, "You've already guessed that letter. Try again.");
+                continue;
+            }
+
+            updateGuessedLetters(guess, wordToGuess, guessedLetters);
+
+            if (!containsGuess(guess, wordToGuess)) {
+                attemptsLeft--;
+                JOptionPane.showMessageDialog(null, "Wrong guess! Attempts left: " + attemptsLeft);
+            } else {
+                JOptionPane.showMessageDialog(null, "Good guess!");
+            }
+
+            displayHangman(attemptsLeft);
+            displayCurrentStatus(guessedLetters, attemptsLeft);
+
+            if (isWordGuessed(guessedLetters)) {
+                JOptionPane.showMessageDialog(null, "Congratulations! You've guessed the word.");
+                break;
+            }
+        }
+
+        if (!isWordGuessed(guessedLetters)) {
+            JOptionPane.showMessageDialog(null, "Sorry, you ran out of attempts. The word was: " + wordToGuess);
+        }
+    }
+
+    private static int getDifficultyLevel() {
+        String[] options = {"Easy", "Medium", "Hard", "Expert"};
+        int choice = JOptionPane.showOptionDialog(null, "Choose a difficulty level:", "Difficulty Level",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        return choice + 1;
+    }
+
+    private static String chooseWord(int difficultyLevel) {
+        String[] words;
+
+        switch (difficultyLevel) {
+            case 1:
+                words = EASY_WORDS;
+                break;
+            case 2:
+                words = MEDIUM_WORDS;
+                break;
+            case 3:
+                words = HARD_WORDS;
+                break;
+            case 4:
+                words = EXPERT_WORDS;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid difficulty level");
+        }
+
+        return words[(int) (Math.random() * words.length)];
+    }
+
+    private static void initializeGuessedLetters(char[] guessedLetters) {
+        for (int i = 0; i < guessedLetters.length; i++) {
+            guessedLetters[i] = '_';
+        }
+    }
+
+    private static void displayHangman(int attemptsLeft) {
+        // ASCII art representation of Hangman Harry
+        switch (attemptsLeft) {
+            case 6:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n");
+                break;
+            case 5:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n");
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + "  |\n");
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + " /|\n");
+                break;
+            case 2:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + " /|\\\n");
+                break;
+            case 1:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + " /|\\\n"
+                        + " /\n");
+                break;
+            case 0:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + " /|\\\n"
+                        + " / \\\n");
+                break;
+            default:
+                break;
+        }
+    }
+
+    private static void displayCurrentStatus(char[] guessedLetters, int attemptsLeft) {
+        StringBuilder display = new StringBuilder("Current Status: ");
+        for (char letter : guessedLetters) {
+            display.append(letter).append(" ");
+        }
+        display.append("\nAttempts left: ").append(attemptsLeft);
+        JOptionPane.showMessageDialog(null, display.toString());
+    }
+
+    private static char getValidGuess() {
+        char guess;
+        while (true) {
+            String input = JOptionPane.showInputDialog("Guess a letter: ").toLowerCase();
+            if (input.length() == 1 && Character.isLetter(input.charAt(0))) {
+                guess = input.charAt(0);
+                break;
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter a single alphabetic character.");
+            }
+        }
+        return guess;
+    }
+
+    private static boolean isAlreadyGuessed(char guess, char[] guessedLetters) {
+        for (char letter : guessedLetters) {
+            if (letter == guess) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void updateGuessedLetters(char guess, String wordToGuess, char[] guessedLetters) {
+        for (int i = 0; i < wordToGuess.length(); i++) {
+            if (wordToGuess.charAt(i) == guess) {
+                guessedLetters[i] = guess;
+            }
+        }
+    }
+
+    private static boolean containsGuess(char guess, String wordToGuess) {
+        return wordToGuess.indexOf(guess) != -1;
+    }
+
+    private static boolean isWordGuessed(char[] guessedLetters) {
+        for (char letter : guessedLetters) {
+            if (letter == '_') {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+
+/*
+  --------
+ |/       |
+ |        |
+ |       (_)
+ |       \|/
+ |        |
+_|_      / \
+*/
