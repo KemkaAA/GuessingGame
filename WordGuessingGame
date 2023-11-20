@@ -1,5 +1,3 @@
-
-
 import javax.swing.JOptionPane;
 
 public class WordGuessingGame {
@@ -12,15 +10,44 @@ public class WordGuessingGame {
     private static final int MAX_ATTEMPTS = 6;
 
     public static void main(String[] args) {
-        int difficultyLevel = getDifficultyLevel();
+        boolean restartGame = true;
+        JOptionPane.showMessageDialog(null, "Welcome to Ultimate Word Guesser!");
+        JOptionPane.showMessageDialog(null, "In this game you will have to figure out random words to win");
+        JOptionPane.showMessageDialog(null, "There will be 4 levels of dificulty:Easy, Medium, Hard, Expert");
+        JOptionPane.showMessageDialog(null, "Will you be able to conquer all 4?");
+        
+        while (restartGame) {
+            int currentLevel = 1;
+            restartGame = playGame(currentLevel);
 
+            if (restartGame) {
+                int choice = JOptionPane.showConfirmDialog(null, "Do you want to try again?", "Try Again?", JOptionPane.YES_NO_OPTION);
+                if (choice != JOptionPane.YES_OPTION) {
+                    restartGame = false;
+                }
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Thanks for playing!");
+    }
+
+    private static boolean playGame(int currentLevel) {
+        while (currentLevel <= 4) {
+            boolean levelResult = playLevel(currentLevel);
+            if (!levelResult) {
+                return false; // Player lost, restart the game
+            }
+            currentLevel++;
+        }
+        return true; // Player completed all levels
+    }
+
+    private static boolean playLevel(int difficultyLevel) {
         String wordToGuess = chooseWord(difficultyLevel);
         char[] guessedLetters = new char[wordToGuess.length()];
         int attemptsLeft = MAX_ATTEMPTS;
-
+        JOptionPane.showMessageDialog(null, "Level " + difficultyLevel);
         initializeGuessedLetters(guessedLetters);
-
-        JOptionPane.showMessageDialog(null, "Welcome to Hangman!");
 
         while (attemptsLeft > 0) {
             char guess = getValidGuess();
@@ -44,21 +71,12 @@ public class WordGuessingGame {
 
             if (isWordGuessed(guessedLetters)) {
                 JOptionPane.showMessageDialog(null, "Congratulations! You've guessed the word.");
-                break;
+                return true; // Player won the level
             }
         }
 
-        if (!isWordGuessed(guessedLetters)) {
-            JOptionPane.showMessageDialog(null, "Sorry, you ran out of attempts. The word was: " + wordToGuess);
-        }
-    }
-
-    private static int getDifficultyLevel() {
-        String[] options = {"Easy", "Medium", "Hard", "Expert"};
-        int choice = JOptionPane.showOptionDialog(null, "Choose a difficulty level:", "Difficulty Level",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-        return choice + 1;
+        JOptionPane.showMessageDialog(null, "Sorry, you ran out of attempts. The word was: " + wordToGuess);
+        return false; // Player lost the level
     }
 
     private static String chooseWord(int difficultyLevel) {
@@ -189,6 +207,13 @@ public class WordGuessingGame {
 
 
 /*
+
+        JOptionPane.showMessageDialog(null, "Welcome to Ultimate Word Guesser!" + difficultyLevel);
+        JOptionPane.showMessageDialog(null, "In this game you will have to figure out random words to win" + difficultyLevel);
+        JOptionPane.showMessageDialog(null, "There will be 4 levels of dificulty:/nEasy/nMedium/nHard/nExpert" + difficultyLevel);
+        JOptionPane.showMessageDialog(null, "Will you be able to conquer all 4?" + difficultyLevel);
+        JOptionPane.showMessageDialog(null, difficultyLevel);
+Random wo
   --------
  |/       |
  |        |
