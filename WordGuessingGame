@@ -12,16 +12,16 @@ public class WordGuessingGame {
     public static void main(String[] args) {
         boolean restartGame = true;
         JOptionPane.showMessageDialog(null, "Welcome to Ultimate Word Guesser!");
-        JOptionPane.showMessageDialog(null, "In this game you will have to figure out random words to win");
-        JOptionPane.showMessageDialog(null, "There will be 4 levels of dificulty:Easy, Medium, Hard, Expert");
+        JOptionPane.showMessageDialog(null, "In this game, you will have to figure out random words to win");
+        JOptionPane.showMessageDialog(null, "There will be 4 levels of difficulty: Easy, Medium, Hard, Expert");
         JOptionPane.showMessageDialog(null, "Will you be able to conquer all 4?");
-        
+
         while (restartGame) {
             int currentLevel = 1;
             restartGame = playGame(currentLevel);
 
             if (restartGame) {
-                int choice = JOptionPane.showConfirmDialog(null, "Do you want to try again?", "Try Again?", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Do you want to try again from the beginning?", "Try Again?", JOptionPane.YES_NO_OPTION);
                 if (choice != JOptionPane.YES_OPTION) {
                     restartGame = false;
                 }
@@ -35,9 +35,14 @@ public class WordGuessingGame {
         while (currentLevel <= 4) {
             boolean levelResult = playLevel(currentLevel);
             if (!levelResult) {
-                return false; // Player lost, restart the game
+                int choice = JOptionPane.showConfirmDialog(null, "Do you want to try again from the beginning?", "Try Again?", JOptionPane.YES_NO_OPTION);
+                if (choice != JOptionPane.YES_OPTION) {
+                    return false; // Player lost, and chose not to restart from the beginning
+                }
+                currentLevel = 1; // Restart from the beginning
+            } else {
+                currentLevel++; // Move to the next level
             }
-            currentLevel++;
         }
         return true; // Player completed all levels
     }
@@ -46,7 +51,9 @@ public class WordGuessingGame {
         String wordToGuess = chooseWord(difficultyLevel);
         char[] guessedLetters = new char[wordToGuess.length()];
         int attemptsLeft = MAX_ATTEMPTS;
-        JOptionPane.showMessageDialog(null, "Level " + difficultyLevel);
+        int incorrectAttempts = 0;
+
+        JOptionPane.showMessageDialog(null, "Difficulty: " + getDifficultyName(difficultyLevel) + "\nLevel " + difficultyLevel);
         initializeGuessedLetters(guessedLetters);
 
         while (attemptsLeft > 0) {
@@ -61,12 +68,13 @@ public class WordGuessingGame {
 
             if (!containsGuess(guess, wordToGuess)) {
                 attemptsLeft--;
+                incorrectAttempts++;
                 JOptionPane.showMessageDialog(null, "Wrong guess! Attempts left: " + attemptsLeft);
             } else {
                 JOptionPane.showMessageDialog(null, "Good guess!");
             }
 
-            displayHangman(attemptsLeft);
+            displayHangman(incorrectAttempts);
             displayCurrentStatus(guessedLetters, attemptsLeft);
 
             if (isWordGuessed(guessedLetters)) {
@@ -77,6 +85,21 @@ public class WordGuessingGame {
 
         JOptionPane.showMessageDialog(null, "Sorry, you ran out of attempts. The word was: " + wordToGuess);
         return false; // Player lost the level
+    }
+
+    private static String getDifficultyName(int difficultyLevel) {
+        switch (difficultyLevel) {
+            case 1:
+                return "Easy";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Hard";
+            case 4:
+                return "Expert";
+            default:
+                throw new IllegalArgumentException("Invalid difficulty level");
+        }
     }
 
     private static String chooseWord(int difficultyLevel) {
@@ -108,42 +131,39 @@ public class WordGuessingGame {
         }
     }
 
-    private static void displayHangman(int attemptsLeft) {
+    private static void displayHangman(int incorrectAttempts) {
         // ASCII art representation of Hangman Harry
-        switch (attemptsLeft) {
-            case 6:
-                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n");
-                break;
-            case 5:
-                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
-                        + "  O\n");
-                break;
-            case 4:
+        switch (incorrectAttempts) {
+            case 0:
                 JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
                         + "  O\n"
-                        + "  |\n");
-                break;
-            case 3:
-                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
-                        + "  O\n"
-                        + " /|\n");
-                break;
-            case 2:
-                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
-                        + "  O\n"
-                        + " /|\\\n");
+                        + "  /|\\\n"
+                        + "  / \\\n");
                 break;
             case 1:
                 JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
                         + "  O\n"
-                        + " /|\\\n"
-                        + " /\n");
+                        + "  /|\\\n"
+                        + "  /\n");
                 break;
-            case 0:
+            case 2:
                 JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
                         + "  O\n"
-                        + " /|\\\n"
-                        + " / \\\n");
+                        + "  /|\\\n");
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + "  /|");
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O\n"
+                        + "  /");
+                break;
+            case 5:
+                JOptionPane.showMessageDialog(null, "Hangman Harry:\n\n"
+                        + "  O");
                 break;
             default:
                 break;
@@ -203,22 +223,3 @@ public class WordGuessingGame {
         return true;
     }
 }
-
-
-
-/*
-
-        JOptionPane.showMessageDialog(null, "Welcome to Ultimate Word Guesser!" + difficultyLevel);
-        JOptionPane.showMessageDialog(null, "In this game you will have to figure out random words to win" + difficultyLevel);
-        JOptionPane.showMessageDialog(null, "There will be 4 levels of dificulty:/nEasy/nMedium/nHard/nExpert" + difficultyLevel);
-        JOptionPane.showMessageDialog(null, "Will you be able to conquer all 4?" + difficultyLevel);
-        JOptionPane.showMessageDialog(null, difficultyLevel);
-Random wo
-  --------
- |/       |
- |        |
- |       (_)
- |       \|/
- |        |
-_|_      / \
-*/
