@@ -3,17 +3,35 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WordGuessingGame {
 
     private static final int MAX_ATTEMPTS = 6;
 
+    private static final List<String> MOTIVATIONAL_MESSAGES = new ArrayList<>();
+
+    static {
+        MOTIVATIONAL_MESSAGES.add("Your almost there…");
+        MOTIVATIONAL_MESSAGES.add("Feeling challenged yet?");
+        MOTIVATIONAL_MESSAGES.add("Remember, victory is achieved through adversity.");
+        MOTIVATIONAL_MESSAGES.add("I hope you're ready.");
+        MOTIVATIONAL_MESSAGES.add("Will you end here?");
+        MOTIVATIONAL_MESSAGES.add("You struggled with that last word, didn’t you?");
+        MOTIVATIONAL_MESSAGES.add("Not giving up yet?");
+        MOTIVATIONAL_MESSAGES.add("The last level is nearly impossible…");
+        MOTIVATIONAL_MESSAGES.add("Never back down, never give up!");
+        MOTIVATIONAL_MESSAGES.add("Will your efforts pay off?");
+        MOTIVATIONAL_MESSAGES.add("It only gets harder from here.");
+    }
+
     public static void main(String[] args) {
         boolean restartGame = true;
         JOptionPane.showMessageDialog(null, "Welcome to Ultimate Word Guesser!");
         JOptionPane.showMessageDialog(null, "In this game, you will have to figure out random words to win");
         JOptionPane.showMessageDialog(null, "There will be 4 levels of difficulty: Easy, Medium, Hard, Expert");
+        JOptionPane.showMessageDialog(null, "For each level you will have 6 lives");
         JOptionPane.showMessageDialog(null, "Will you be able to conquer all 4?");
 
         while (restartGame) {
@@ -42,8 +60,11 @@ public class WordGuessingGame {
                 currentLevel = 1; // Restart from the beginning
             } else {
                 currentLevel++; // Move to the next level
+                displayRandomMotivationalMessage(); // Display a random motivational message
             }
         }
+        JOptionPane.showMessageDialog(null, "Congratulations! You've done the impossible,\ncompleted all levels and won the game!");
+        JOptionPane.showMessageDialog(null, "But this is not the end.\nThere are over 100 random words can you beat the game again?");
         return true; // Player completed all levels
     }
 
@@ -69,7 +90,7 @@ public class WordGuessingGame {
             if (!containsGuess(guess, wordToGuess)) {
                 attemptsLeft--;
                 incorrectAttempts++;
-                JOptionPane.showMessageDialog(null, "Wrong guess! Attempts left: " + attemptsLeft);
+                JOptionPane.showMessageDialog(null, "Wrong guess! Lives left: " + attemptsLeft);
             } else {
                 JOptionPane.showMessageDialog(null, "Good guess!");
             }
@@ -83,8 +104,13 @@ public class WordGuessingGame {
             }
         }
 
-        JOptionPane.showMessageDialog(null, "Sorry, you ran out of attempts. The word was: " + wordToGuess);
+        JOptionPane.showMessageDialog(null, "Game Over! You ran out of lives. The word was: " + wordToGuess);
         return false; // Player lost the level
+    }
+
+    private static void displayRandomMotivationalMessage() {
+        Collections.shuffle(MOTIVATIONAL_MESSAGES);
+        JOptionPane.showMessageDialog(null, MOTIVATIONAL_MESSAGES.get(0));
     }
 
     private static String getDifficultyName(int difficultyLevel) {
@@ -150,6 +176,7 @@ public class WordGuessingGame {
     private static void initializeGuessedLetters(char[] guessedLetters) {
         for (int i = 0; i < guessedLetters.length; i++) {
             guessedLetters[i] = '_';
+            
         }
     }
 
@@ -197,7 +224,7 @@ public class WordGuessingGame {
         for (char letter : guessedLetters) {
             display.append(letter).append(" ");
         }
-        display.append("\nAttempts left: ").append(attemptsLeft);
+        display.append("\nLives left: ").append(attemptsLeft);
         JOptionPane.showMessageDialog(null, display.toString());
     }
 
