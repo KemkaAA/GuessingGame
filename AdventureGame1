@@ -1,0 +1,94 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class AdventureGame {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        ArrayList<String> inventory = new ArrayList<>();
+        boolean isInjured = false;
+
+        // Introduction
+        System.out.println("You wake up in the middle of the night to an earthquake!");
+
+        // Options during earthquake
+        System.out.println("Options:");
+        System.out.println("1. Grab your flashlight");
+        System.out.println("2. Check your phone");
+        System.out.println("3. Grab your car keys");
+        System.out.println("4. Look for medical supplies");
+        System.out.println("5. Stay in bed");
+        System.out.println("6. Hide under the table");
+        System.out.println("7. Run outside");
+        System.out.println("8. Check the door frame");
+
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                inventory.add("Flashlight");
+                break;
+            case 2:
+                inventory.add("Phone");
+                break;
+            case 3:
+                inventory.add("Car Keys");
+                break;
+            case 4:
+                inventory.add("Medical Supplies");
+                break;
+            case 5:
+                System.out.println("You stayed in bed and got injured as rubble fell on you.");
+                isInjured = true;
+                break;
+            case 6:
+                System.out.println("You hid under the table and survived the earthquake!");
+                break;
+            case 7:
+                System.out.println("You ran outside and got injured by falling debris.");
+                isInjured = true;
+                break;
+            case 8:
+                System.out.println("You stood in the doorway and survived the earthquake!");
+                break;
+            default:
+                System.out.println("Invalid choice. You panicked and got injured.");
+                isInjured = true;
+        }
+
+        // Check if the player got injured
+        if (isInjured) {
+            System.out.println("Bad ending: Crushed by rubble. Game over!");
+            return;
+        }
+
+        // After surviving earthquake
+        System.out.println("After surviving the earthquake, you check your phone and see a tsunami alert!");
+
+        // Options after earthquake
+        System.out.println("Options:");
+        System.out.println("1. Escape by car");
+        System.out.println("2. Get to high ground in time");
+
+        choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                if (inventory.contains("Car Keys")) {
+                    System.out.println("You escape by car and reach a safe location. Congratulations, you survived!");
+                } else {
+                    System.out.println("You don't have your car keys. Bad ending: Stuck in traffic and submerged. Game over!");
+                }
+                break;
+            case 2:
+                if (inventory.contains("Flashlight")) {
+                    System.out.println("You use your flashlight to find your way to high ground and survive. Congratulations!");
+                } else {
+                    System.out.println("You didn't have a flashlight. Bad ending: Stuck in a building and submerged. Game over!");
+                }
+                break;
+            default:
+                System.out.println("Invalid choice. You hesitated and got submerged. Game over!");
+        }
+    }
+}
