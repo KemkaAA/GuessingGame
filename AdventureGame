@@ -89,6 +89,20 @@ public class AdventureGame {
                 break;
             default:
                 System.out.println("Invalid choice. You hesitated and got submerged. Game over!");
+
+/*
+You wake up at the middle of the night to an earthquake. You have moments to decide what to do (8 options) (3 correct options one option gets you injured)
+
+Bad ending: Crushed by ruble, Injured(carries over to tsunami, )
+After surviving you look at your phone to see a tsunami alert you need to decide what to do:
+Bad ending stuck in traffic and submerged. (take the shortcut)
+Stuck in a building and submerged. (take too long looking)
+Die from injuries. (don’t look for or use medical supplies after earthquake)
+
+Good endings: Escape by car, Get to high ground in time
+
+Flashlight(After earthquake) , phone (during earthquake) , car keys (during earthquake) , medical supplies(After earthquake)
+*/
         }
     }
 }
