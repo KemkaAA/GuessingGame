@@ -1,108 +1,187 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AdventureGame {
+public class TextBasedGame {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        // Player inventory and game state variables
         ArrayList<String> inventory = new ArrayList<>();
         boolean isInjured = false;
+        boolean end = false;  // Flag to indicate if the game should end
+        boolean moveRoom = false;  // Flag to control the movement between rooms
+        int choicesMade = 0;  // Counter for total choices made
+        int choicesAfterInjury = 0;  // Counter for choices made after being injured
+        final int MAX_CHOICES = 4;  // Maximum choices allowed in each room
 
         // Introduction
         System.out.println("You wake up in the middle of the night to an earthquake!");
+        System.out.println("You need to act quickly");
+        while (!moveRoom) {
+            // Options during the earthquake in the initial room
+            System.out.println("Options:");
+            System.out.println("1. Stay in bed");
+            System.out.println("2. Get out of bed");
+            System.out.println("3. Look in bag from your bedside table");
+            System.out.println("4. Grab your car keys from your bedside table");
 
-        // Options during earthquake
-        System.out.println("Options:");
-        System.out.println("1. Grab your flashlight");
-        System.out.println("2. Check your phone");
-        System.out.println("3. Grab your car keys");
-        System.out.println("4. Look for medical supplies");
-        System.out.println("5. Stay in bed");
-        System.out.println("6. Hide under the table");
-        System.out.println("7. Run outside");
-        System.out.println("8. Check the door frame");
+            int choice = scanner.nextInt();
+            choicesMade++;
 
-        int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.println("You stayed in bed and rubble fell on you.");
+                    end = true;  // Player met a bad ending
+                    break;
+                case 2:
+                    moveRoom = true;  // Player moves to the next room
+                    break;
+                case 3:
+                    System.out.println("You found your phone");
+                    inventory.add("Phone");
+                    break;
+                case 4:
+                    System.out.println("You found got your car keys");
+                    inventory.add("Car Keys");
+                    break;
+                default:
+                    System.out.println("Invalid choice. You start to panic");
+            }
 
-        switch (choice) {
-            case 1:
-                inventory.add("Flashlight");
-                break;
-            case 2:
-                inventory.add("Phone");
-                break;
-            case 3:
-                inventory.add("Car Keys");
-                break;
-            case 4:
-                inventory.add("Medical Supplies");
-                break;
-            case 5:
-                System.out.println("You stayed in bed and got injured as rubble fell on you.");
-                isInjured = true;
-                break;
-            case 6:
-                System.out.println("You hid under the table and survived the earthquake!");
-                break;
-            case 7:
-                System.out.println("You ran outside and got injured by falling debris.");
-                isInjured = true;
-                break;
-            case 8:
-                System.out.println("You stood in the doorway and survived the earthquake!");
-                break;
-            default:
-                System.out.println("Invalid choice. You panicked and got injured.");
-                isInjured = true;
+            // Check if the player got injured
+            if (end) {
+                System.out.println("Bad ending: Crushed by rubble.");
+                return;
+            }
+            if (choicesMade > MAX_CHOICES) {
+                System.out.println("You took too long, your room starts to fall apart");
+                System.out.println("Bad ending: Crushed by rubble.");
+                return; // Player took too long, bad ending
+            }
         }
 
-        // Check if the player got injured
-        if (isInjured) {
-            System.out.println("Bad ending: Crushed by rubble. Game over!");
-            return;
+        moveRoom = false;
+
+        // Additional options during the earthquake in the second room
+        while (!moveRoom) {
+            System.out.println("You get up");
+            System.out.println("Options:");
+            System.out.println("4. Hide under door frame");
+            System.out.println("5. Look in jacket");
+            System.out.println("6. Hide under the table");
+            System.out.println("7. Run outside");
+            System.out.println("8. Check your wallet");
+
+            int choice = scanner.nextInt();
+            choicesMade++;
+
+            switch (choice) {
+                case 4:
+                    System.out.println("You hid under the door frame. Unfortunately, some rubble fell on you.\nYou got injured");
+                    isInjured = true;
+                    moveRoom = true;
+                    break;
+                case 5:
+                    System.out.println("You found a paperclip");
+                    inventory.add("Paperclip");
+                    break;
+                case 6:
+                    System.out.println("You hid under the table");
+                    moveRoom = true;
+                    break;
+                case 7:
+                    System.out.println("You try to run outside but a piece of rubble falls on you");
+                    end = true;  // Player met a bad ending
+                    break;
+                case 8:
+                    System.out.println("There is nothing inside...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. You start to panic");
+                    
+            }
+
+            // Check if the player got injured
+            if (end) {
+                System.out.println("Bad ending: Crushed by rubble. Game over!");
+                return;
+            }
+            if (isInjured && choicesAfterInjury >= 2) {
+                System.out.println("You're too injured to go on. Bad ending: Succumbed to injuries.");
+                return;  // Player made too many choices after being injured, bad ending
+            }
+            if (choicesMade > MAX_CHOICES) {
+                System.out.println("You took too long, your room starts to fall apart");
+                System.out.println("Bad ending: Crushed by rubble.");
+                return; // Player took too long, bad ending
+            }
         }
 
         // After surviving earthquake
-        System.out.println("After surviving the earthquake, you check your phone and see a tsunami alert!");
-
-        // Options after earthquake
-        System.out.println("Options:");
-        System.out.println("1. Escape by car");
-        System.out.println("2. Get to high ground in time");
-
-        choice = scanner.nextInt();
-
-        switch (choice) {
-            case 1:
-                if (inventory.contains("Car Keys")) {
-                    System.out.println("You escape by car and reach a safe location. Congratulations, you survived!");
-                } else {
-                    System.out.println("You don't have your car keys. Bad ending: Stuck in traffic and submerged. Game over!");
-                }
-                break;
-            case 2:
-                if (inventory.contains("Flashlight")) {
-                    System.out.println("You use your flashlight to find your way to high ground and survive. Congratulations!");
-                } else {
-                    System.out.println("You didn't have a flashlight. Bad ending: Stuck in a building and submerged. Game over!");
-                }
-                break;
-            default:
-                System.out.println("Invalid choice. You hesitated and got submerged. Game over!");
-
-/*
-You wake up at the middle of the night to an earthquake. You have moments to decide what to do (8 options) (3 correct options one option gets you injured)
-
-Bad ending: Crushed by ruble, Injured(carries over to tsunami, )
-After surviving you look at your phone to see a tsunami alert you need to decide what to do:
-Bad ending stuck in traffic and submerged. (take the shortcut)
-Stuck in a building and submerged. (take too long looking)
-Die from injuries. (don’t look for or use medical supplies after earthquake)
-
-Good endings: Escape by car, Get to high ground in time
-
-Flashlight(After earthquake) , phone (during earthquake) , car keys (during earthquake) , medical supplies(After earthquake)
-*/
+        System.out.println("You wait some time until the earthquake stops and get out of your hiding spot");
+        moveRoom = false;
+        if(isInjured){
+         System.out.println("Your injuries are severe medical attention is needed");
         }
-    }
+        while (!moveRoom) {
+       // Options after earthquake
+       System.out.println("Options:");
+       System.out.println("1. Rummage through rubble");
+       System.out.println("2. Go outside of your house");
+       System.out.println("3. Check your phone");
+       System.out.println("4. Wait for help");
+   
+       int choice = scanner.nextInt();
+   
+         switch (choice) {
+           case 1:
+               inventory.add("Medkit");
+               if (isInjured) {
+                   System.out.println("You found a medkit and used it");
+                   isInjured = false;
+               } 
+               else {
+                   inventory.add("Flashlight");
+                   System.out.println("You found a flashlight");
+               }
+               choicesMade++;
+               break;
+           case 2:
+               moveRoom = true;
+               if (isInjured) {
+                  choicesAfterInjury++;
+               }
+               break;
+           case 3:
+               if (inventory.contains("Phone")) {
+                   System.out.println("You check your phone and see a tsunami alert!");
+                   choicesMade++;
+                   // Increment choicesAfterInjury for the injured player
+                   if (isInjured) {
+                       choicesAfterInjury++;
+                   }
+               } 
+               else {
+                   System.out.println("You don't have your phone...");
+                   choicesMade++;
+                   // Increment choicesAfterInjury for the injured player
+                   if (isInjured) {
+                       choicesAfterInjury++;
+                   }
+               }
+               break;
+           case 4:
+               System.out.println("You wait to see a wave rush towards you\nBad ending: Submerged");
+               return; // Player chose to wait and met a bad ending
+           default:
+               System.out.println("Invalid choice. You start to panic");
+       }
+       if (isInjured && choicesAfterInjury >= 2) {
+                System.out.println("You're too injured to go on. Bad ending: Succumbed to injuries.");
+                return;  // Player made too many choices after being injured, bad ending
+            }
+
+      }        
+   }
 }
+
